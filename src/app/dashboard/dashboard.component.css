@@ -1,0 +1,9 @@
+  
+.mat-column-select {
+    overflow: visible;
+  }
+  /* Structure */
+.container {
+  display: flex;
+  flex-direction: column;
+}

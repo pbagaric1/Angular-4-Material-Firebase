@@ -1,0 +1,77 @@
+<div>
+  <mat-form-field>
+    <input matInput #filter placeholder="Search">
+  </mat-form-field>
+
+  <mat-table [dataSource]="dataSource" matSort>
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null" 
+        [checked]="isAllSelected()" 
+        [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()" 
+        (change)="$event ? selection.toggle(row) : null" 
+        [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+      <mat-cell *matCellDef="let task">{{task.data.id}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+      <mat-cell *matCellDef="let task">{{task.data.name}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="description">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+      <mat-cell *matCellDef="let task">{{task.data.description}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="timeOfCreation">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Time of Creation</mat-header-cell>
+      <mat-cell *matCellDef="let task">{{task.data.timeOfCreation | date: 'MM-dd-yyyy HH:mm:ss a'}}</mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let task; let i=index;">
+        <button mat-icon-button color="primary" routerLink="/details" (click)="onDetails(task)">
+          Details
+        </button>
+        <button mat-icon-button color="primary" (click)="editTask(task.key, task.data.id, task.data.name,
+         task.data.description, task.data.timeOfCreation)">
+          Edit
+        </button>
+
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+
+
+  <!-- Add/Delete Task Modal -->
+  <div>
+    <button mat-icon-button color="primary" (click)="addNewTask()">Add
+    </button>
+    <button mat-icon-button color="primary" (click)="deleteTask()">Delete
+    </button>
+  </div>
+
+
+  <!-- Show pagination if 5 or more tasks -->
+  <div [hidden]="!(dataSource.filteredData.length> itemsPerPage)">
+    <!-- <div *ngIf="tasks.length >= itemsPerPage"> -->
+    <mat-paginator #paginator [length]="dataSource?.filteredData.length" [pageSize]="itemsPerPage">
+    </mat-paginator>
+  </div>
+</div>
